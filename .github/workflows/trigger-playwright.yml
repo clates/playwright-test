@@ -1,0 +1,20 @@
+name: Post Worldbuilder Regression
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - run: |
+          echo A comment on PR $NUMBER was made: $EVENT
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          EVENT: ${{ github.event }}
