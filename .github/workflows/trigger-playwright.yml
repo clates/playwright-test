@@ -14,7 +14,7 @@ jobs:
       pull-requests: write
     steps:
       - run: |
-          echo I am not going to show up in the console when you comment. $NUMBER $EVENT
+          echo _______________. $NUMBER $EVENT
         env:
           NUMBER: ${{ github.event.issue.number }}
           EVENT: ${{ github.event.comment.body }}
