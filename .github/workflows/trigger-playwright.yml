@@ -13,12 +13,10 @@ jobs:
       contents: read
       pull-requests: write
     steps:
+        # Extract the world from the comment and run the test
+        # Integration Test World URL (client-app-ci-pr-8693-24-stage-world): 👉 https://client-app-ci-pr-8693-24-stage-world.crunchbase.io/
       - run: |
-          echo I am going to run tests against the provided comment website. 
-          tmp="${EVENT#*\(}"
-          tmp1="${tmp%)*}"
-          echo $tmp1
-          echo BASE_URL=$tmp1 
+          echo "${tmp#*👉 }"
         env:
           NUMBER: ${{ github.event.issue.number }}
           EVENT: ${{ github.event.comment.body }}
