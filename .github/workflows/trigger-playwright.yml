@@ -49,7 +49,7 @@ jobs:
           CI=true BASE_URL="https://www.crunchbase.com/buy/cb-starter" npx playwright test --update-snapshots
           CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
       - name: Generate offending test comments
-        if: ${{ always() }}
+        if: ${{ failure() }}
         run: |
           echo "Found the following offending tests: "
           find . -name "*diff.png"
@@ -62,13 +62,12 @@ jobs:
 
           echo "Generating summary.out file"
           find . -name "*.base64" | while read file; do echo "$prepend$(cat $file)$postpend" >> summary.out; done        
-          echo  $(cat results.json)>> $GITHUB_STEP_SUMMARY    
           echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
       - name: Upload test results
-        if: ${{ always() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
-          name: test-results
+          name: test-results/**/*diff.png
           path: test-results
     outputs:
       world_url: ${{ steps.extract.outputs.world_url }}
