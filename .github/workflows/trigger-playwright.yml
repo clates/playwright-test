@@ -65,7 +65,7 @@ jobs:
             echo "$prepend$(cat $1)$postpend"
           }
 
-          find . -name "*.base64" -exec sh -c 'interpolate $1' >> summary.out' -- {} \;        
+          find . -name "*.base64" -exec sh -c 'interpolate $1 >> summary.out' -- {} \;        
           echo  $(cat results.json)>> $GITHUB_STEP_SUMMARY    
           echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
       - name: Upload test results
