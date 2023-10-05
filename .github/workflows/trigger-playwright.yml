@@ -55,7 +55,7 @@ jobs:
           find . -name "*diff.png"
           echo "Generating offending test comments to base64 image files"
           find . -name "*diff.png" -exec sh -c 'base64 -w 0 $1 > "$1.base64"' -- {} \;
-          prepend="![Hello World](data:image/png;base64, "
+          prepend="![Playwright Diff](data:image/png;base64,"
           postpend=")"
           echo "Generated the base64 image files"
           find . -name "*.base64"
