@@ -51,10 +51,16 @@ jobs:
       - name: Generate offending test comments
         if: ${{ always() }}
         run: |
-          echo "Generating offending test comments to b64 image tags "
-          find . -name "*diff.png" -exec sh -c 'base64 -w 0 $1 > "$1.base64"';
+          echo "Found the following offending tests: "
+          find . -name "*diff.png"
+          echo "Generating offending test comments to base64 image files"
+          find . -name "*diff.png" -exec sh -c 'base64 -w 0 $1 > "$1.base64"' -- {} \;
           prepend="<img data:image/png;base64, "
           postpend=" />"
+          echo "Generated the base64 image files"
+          find . -name "*.base64"
+
+          echo "Generating summary.out file"
           find . -name "*.base64" -exec sh -c 'echo "$1`cat $2`$3" >> summary.out' -- $prepend {} $postpend \;        
           echo  $(cat results.json)>> $GITHUB_STEP_SUMMARY    
           echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
