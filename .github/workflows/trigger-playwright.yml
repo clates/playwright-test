@@ -13,35 +13,33 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-        # Extract the world from the comment and run the test
-        # Integration Test World URL (client-app-ci-pr-8693-24-stage-world): 👉 https://client-app-ci-pr-8693-24-stage-world.crunchbase.io/
+      # Extract the world from the comment and run the test
+      # Integration Test World URL (client-app-ci-pr-8693-24-stage-world): 👉 https://client-app-ci-pr-8693-24-stage-world.crunchbase.io/
       - run: |
-            echo "Extracting world URL from comment"
-            echo $EVENT
-            BASE_URL="${EVENT#*👉 }"
-            echo $BASE_URL
-            if [ -z "$BASE_URL" ]
-            then
-                echo "No world URL found in comment"
-                exit 1
-            fi
-            echo "Comment contained trigger $BASE_URL"
-            if [[ $BASE_URL =~ ^https://.*\.crunchbase\.io/$ ]]
-            then
-                exit 0
-            else
-                echo "World URL is invalid"
-                exit 1
-            fi
-      - run: |
-            echo "Running playwright test"
-            npm install
-            npm run test:playwright 
-
+          echo "Extracting world URL from comment"
+          echo $EVENT
+          BASE_URL="${EVENT#*👉 }"
+          echo $BASE_URL
+          if [ -z "$BASE_URL" ]
+          then
+              echo "No world URL found in comment"
+              exit 1
+          fi
+          echo "Comment contained trigger $BASE_URL"
+          if [[ $BASE_URL =~ ^https://.*\.crunchbase\.io/$ ]]
+          then
+              exit 0
+          else
+              echo "World URL is invalid"
+              exit 1
+          fi
         env:
           NUMBER: ${{ github.event.issue.number }}
           EVENT: ${{ github.event.comment.body }}
-
+    #   - run: |
+    #         echo "Running playwright test"
+    #         npm install
+    #         npm run test:playwright
 #   blah:
 #     name: Create pull request
 #     uses: actions/github-script@v6.4.1
