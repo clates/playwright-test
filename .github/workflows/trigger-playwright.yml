@@ -46,7 +46,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: |          
-          CI=true BASE_URL="https://www.uuidgenerator.com/" npx playwright test --update-snapshots
+          CI=true BASE_URL="https://www.crunchbase.com/" npx playwright test --update-snapshots
           CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
       - name: Upload test results
         if: ${{ always() }}
