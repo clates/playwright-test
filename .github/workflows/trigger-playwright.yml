@@ -15,27 +15,47 @@ jobs:
     steps:
       # Extract the world from the comment and run the test
       # Integration Test World URL (client-app-ci-pr-8693-24-stage-world): 👉 https://client-app-ci-pr-8693-24-stage-world.crunchbase.io/
-      - run: |
+      - id: extract
+        run: |
           echo "Extracting world URL from comment"
           echo $EVENT
           BASE_URL="${EVENT#*👉 }"
           echo $BASE_URL
           if [ -z "$BASE_URL" ]
           then
-              echo "No world URL found in comment"
-              exit 1
+                echo "No world URL found in comment"
+                exit 1
           fi
           echo "Comment contained trigger $BASE_URL"
           if [[ $BASE_URL =~ ^https://.*\.crunchbase\.io/$ ]]
           then
-              exit 0
+                echo "World URL is valid"
+                echo "::set-output name=world_url::$BASE_URL"  
+                exit 0
           else
-              echo "World URL is invalid"
-              exit 1
+                echo "World URL is invalid"
+                exit 1
           fi
         env:
-          NUMBER: ${{ github.event.issue.number }}
-          EVENT: ${{ github.event.comment.body }}
+            NUMBER: ${{ github.event.issue.number }}
+            EVENT: ${{ github.event.comment.body }}
+      - id: runPlaywright
+        run: |
+            echo "Running playwright test"
+            steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+            node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test --update-snapshots
+    outputs:
+        world_url: ${{ steps.extract.outputs.world_url }}
+            
     #   - run: |
     #         echo "Running playwright test"
     #         npm install
