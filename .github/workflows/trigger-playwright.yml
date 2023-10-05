@@ -16,7 +16,25 @@ jobs:
         # Extract the world from the comment and run the test
         # Integration Test World URL (client-app-ci-pr-8693-24-stage-world): 👉 https://client-app-ci-pr-8693-24-stage-world.crunchbase.io/
       - run: |
-          echo "${EVENT#*👉 }"
+          BASE_URL="${EVENT#*👉 }"
+          if [ -z "$BASE_URL" ]
+          then
+            echo "No world URL found in comment"
+            exit 1
+          fi
+          echo "Comment contained trigger $BASE_URL"
+          if [[ $BASE_URL =~ ^https://.*\.crunchbase\.io/$ ]]
+          then
+            exit 0
+          else
+            echo "World URL is invalid"
+            exit 1
+          fi
+      - run: |
+          echo "Running playwright test"
+          npm install
+          npm run test:playwright 
+
         env:
           NUMBER: ${{ github.event.issue.number }}
           EVENT: ${{ github.event.comment.body }}
