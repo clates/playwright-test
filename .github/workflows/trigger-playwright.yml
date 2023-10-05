@@ -55,13 +55,17 @@ jobs:
           find . -name "*diff.png"
           echo "Generating offending test comments to base64 image files"
           find . -name "*diff.png" -exec sh -c 'base64 -w 0 $1 > "$1.base64"' -- {} \;
-          prepend="<img data:image/png;base64, "
-          postpend=" />"
+          prepend="<img src='data:image/png;base64, "
+          postpend="' />"
           echo "Generated the base64 image files"
           find . -name "*.base64"
 
           echo "Generating summary.out file"
-          find . -name "*.base64" -exec sh -c 'echo "$2`cat $3`$4" >> summary.out' -- $prepend {} $postpend \;        
+          interpolate() {
+            echo "$prepend$(cat $1)$postpend"
+          }
+
+          find . -name "*.base64" -exec sh -c 'interpolate $1' >> summary.out' -- {} \;        
           echo  $(cat results.json)>> $GITHUB_STEP_SUMMARY    
           echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
       - name: Upload test results
