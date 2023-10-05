@@ -37,16 +37,15 @@ jobs:
                 exit 1
           fi
         env:
-            NUMBER: ${{ github.event.issue.number }}
-            EVENT: ${{ github.event.comment.body }}
+          NUMBER: ${{ github.event.issue.number }}
+          EVENT: ${{ github.event.comment.body }}
       - id: runPlaywright
         run: |
-            echo "Running playwright test"
-            steps:
+          echo "Running playwright test"
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-            node-version: 18
+          node-version: 18
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers
@@ -54,8 +53,8 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --update-snapshots
     outputs:
-        world_url: ${{ steps.extract.outputs.world_url }}
-            
+      world_url: ${{ steps.extract.outputs.world_url }}
+
     #   - run: |
     #         echo "Running playwright test"
     #         npm install
