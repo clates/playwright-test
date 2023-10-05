@@ -61,7 +61,7 @@ jobs:
           find . -name "*.base64"
 
           echo "Generating summary.out file"
-          find . -name "*.base64" -exec sh -c 'echo "$1`cat $2`$3" >> summary.out' -- $prepend {} $postpend \;        
+          find . -name "*.base64" -exec sh -c 'echo "$2`cat $3`$4" >> summary.out' -- $prepend {} $postpend \;        
           echo  $(cat results.json)>> $GITHUB_STEP_SUMMARY    
           echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
       - name: Upload test results
