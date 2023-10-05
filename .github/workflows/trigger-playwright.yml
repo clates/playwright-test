@@ -20,7 +20,7 @@ jobs:
           echo "Extracting world URL from comment"
           echo $EVENT
           BASE_URL="${EVENT#*👉 }"
-          if [[ $BASE_URL =~ ^https:\/\/(.*)\.?crunchbase\.(io|com)\/? ]]
+          if [[ $BASE_URL =~ ^https:\/\/(.*)\.?crunchbase\.(io|com)(\/?.*)*$ ]]
           then
                 echo "Comment contained trigger $BASE_URL"
                 echo "World URL is valid"
@@ -48,6 +48,12 @@ jobs:
         run: |          
           CI=true BASE_URL="https://www.crunchbase.com/buy/cb-starter" npx playwright test --update-snapshots
           CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
+      - name: Generate offending test comments
+        run: |
+          echo "Generating offending test comments"
+          echo "Test failed" >> $GITHUB_STEP_SUMMARY
+          echo "Test failed" >> $GITHUB_STEP_LOG
+          echo "Test failed" >> $GITHUB_ENV
       - name: Upload test results
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
