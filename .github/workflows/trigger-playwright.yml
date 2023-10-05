@@ -51,9 +51,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: |
-          echo "$BASE_URL"            
-          BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test --update-snapshots
+        run: |          
+          CI=true BASE_URL="https://www.crunchbase.com/" npx playwright test --update-snapshots
+          CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
     outputs:
       world_url: ${{ steps.extract.outputs.world_url }}
 
