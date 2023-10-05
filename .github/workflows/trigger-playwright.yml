@@ -20,26 +20,14 @@ jobs:
           echo "Extracting world URL from comment"
           echo $EVENT
           BASE_URL="${EVENT#*👉 }"
-          echo $BASE_URL
-          if [ -z "$BASE_URL" ]
+          if [[ $BASE_URL =~ ^https:\/\/(.*)\.?crunchbase\.(io|com)\/? ]]
           then
-                echo "No world URL found in comment"
-                exit 1
-          fi
-          echo "Comment contained trigger $BASE_URL"
-          if [[ $BASE_URL =~ ^https://.*\.crunchbase\.com/$ ]]
-          then
-                echo "World URL is valid (.com)"
-                echo "::set-output name=world_url::$BASE_URL"  
-                exit 0
-          fi
-          if [[ $BASE_URL =~ ^https://.*\.crunchbase\.io/$ ]]
-          then
+                echo "Comment contained trigger $BASE_URL"
                 echo "World URL is valid"
                 echo "::set-output name=world_url::$BASE_URL"  
                 exit 0
           else
-                echo "World URL is invalid"
+                echo "No Trigger Found" >> $GITHUB_STEP_SUMMARY
                 exit 1
           fi
         env:
@@ -60,6 +48,12 @@ jobs:
         run: |          
           CI=true BASE_URL="https://www.uuidgenerator.com/" npx playwright test --update-snapshots
           CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
+      - name: Upload test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: test-results
     outputs:
       world_url: ${{ steps.extract.outputs.world_url }}
 
