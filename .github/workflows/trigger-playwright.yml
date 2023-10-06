@@ -55,14 +55,16 @@ jobs:
           find . -name "*diff.png"
           echo "Generating offending test comments to base64 image files"
           find . -name "*diff.png" -exec sh -c 'base64 -w 0 $1 > "$1.base64"' -- {} \;
-          prepend="![Playwright Diff](data:image/png;base64,"
-          postpend=")"
+          prepend="data:image/png;base64,"
+          postpend=""
           echo "Generated the base64 image files"
           find . -name "*.base64"
 
           echo "Generating summary.out file"
-          find . -name "*.base64" | while read file; do echo "$prepend$(cat $file)$postpend" >> summary.out; done        
-          echo  $(cat summary.out)>> $GITHUB_STEP_SUMMARY
+          find . -name "*.base64" | while read file; do echo "$prepend$(cat $file)$postpend" >> $file.out; done    
+          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node signedUpload.js test-results/example-has-title-chromium/uuidgenerator-diff.out   
+          find . -name "*.url" | while read file; do cat $file >> $GITHUB_STEP_SUMMARY; done    
+          
       - name: Upload test results
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
@@ -73,15 +75,15 @@ jobs:
       - uses: actions/github-script@v6
         if: ${{ failure() }}
         with:
-            script: |
-                github.rest.issues.createComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `
-                        Playwright identified the following differences in the world:
-                    `
-                })
+          script: |
+            github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `
+                Playwright identified the following differences in the world:
+                `
+            })
     outputs:
       world_url: ${{ steps.extract.outputs.world_url }}
 
