@@ -31,7 +31,7 @@ jobs:
                 exit 1
           fi
         env:
-          NUMBER: ${{ github.event.issue.number }}
+          NUMBER: ${{ github.event.comment.id }}
           EVENT: ${{ github.event.comment.body }}
       - id: runPlaywright
         run: |
@@ -47,7 +47,7 @@ jobs:
       - name: Run Playwright tests
         run: |
           CI=true BASE_URL="https://www.crunchbase.com/buy/cb-starter" npx playwright test --update-snapshots
-          CURRENTS_PROJECT_ID=${{secrets.CURRENTS_PROJ}} CURRENTS_RECORD_KEY=${{secrets.CURRENTS_SECRET}} CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
+          CURRENTS_PROJECT_ID=${{secrets.CURRENTS_PROJ}} CURRENTS_RECORD_KEY=${{secrets.CURRENTS_SECRET}} CURRENTS_CI_BUILD_ID=${{ github.event.comment.id }} CI=true BASE_URL=${{ steps.extract.outputs.world_url }} npx playwright test
       - name: Generate offending test comments
         if: ${{ failure() }}
         run: |
