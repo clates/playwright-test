@@ -23,6 +23,7 @@ export default defineConfig({
   reporter: [
     process.env.CI ? ["github"] : ["html"],
     ["json", { outputFile: "results.json" }],
+    ["@currents/playwright"],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
