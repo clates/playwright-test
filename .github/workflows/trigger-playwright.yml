@@ -60,11 +60,17 @@ jobs:
           echo "Generated the base64 image files"
           find . -name "*.base64"
 
-          echo "Generating summary.out file"
+          echo "Generating individual.out files"
           find . -name "*.base64" | while read file; do echo "$prepend$(cat $file)$postpend" >> $file.out; done    
-          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node ./cloudinary/signedUpload.js test-results/example-has-title-chromium/uuidgenerator-diff.out   
-          find . -name "*.url" | while read file; do cat $file >> $GITHUB_STEP_SUMMARY; done    
-          
+
+          echo "Generated the out image files"
+          find . -name "*.out"
+          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node ./cloudinary/signedUpload.js ./test-results/example-has-title-chromium/uuidgenerator-diff.out   
+          find . -name "*.url" | while read file; do cat $file >> $GITHUB_STEP_SUMMARY; done  
+
+          echo "Generated the URL image files"
+          find . -name "*.url"
+
       - name: Upload test results
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
