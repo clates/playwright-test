@@ -65,7 +65,7 @@ jobs:
 
           echo "Generated the out image files"
           find . -name "*.out"
-          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node ./cloudinary/signedUpload.js ./test-results/example-has-title-chromium/uuidgenerator-diff.out   
+          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node ./cloudinary/signedUpload.js ./test-results/example-has-title-chromium/uuidgenerator-diff.png.base64.out   
           find . -name "*.url" | while read file; do cat $file >> $GITHUB_STEP_SUMMARY; done  
 
           echo "Generated the URL image files"
