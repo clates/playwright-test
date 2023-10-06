@@ -62,7 +62,7 @@ jobs:
 
           echo "Generating summary.out file"
           find . -name "*.base64" | while read file; do echo "$prepend$(cat $file)$postpend" >> $file.out; done    
-          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node signedUpload.js test-results/example-has-title-chromium/uuidgenerator-diff.out   
+          API_KEY=${{secrets.CLOUDINARY_API_KEY}} API_SECRET=${{secrets.CLOUDINARY_API_SECRET}} node ./cloudinary/signedUpload.js test-results/example-has-title-chromium/uuidgenerator-diff.out   
           find . -name "*.url" | while read file; do cat $file >> $GITHUB_STEP_SUMMARY; done    
           
       - name: Upload test results
